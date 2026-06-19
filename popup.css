@@ -1,0 +1,317 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 360px;
+  height: 600px;
+  background: #f1f1f1;
+  color: #2f2f2f;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue",
+    Arial, sans-serif;
+  overflow: hidden;
+}
+
+.popup {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top strong {
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.study-btn {
+  border: 1px solid #a88fff;
+  background: linear-gradient(180deg, #9c82ff 0%, #8f75ef 100%);
+  border-radius: 9px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ghost {
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  background: #fafafa;
+  color: #4a4a4a;
+  font-size: 12px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.status {
+  margin: 0;
+  font-size: 12px;
+  color: #555;
+  background: #e8e8e8;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  padding: 7px 8px;
+  white-space: normal;
+  line-height: 1.35;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.props {
+  border: 1px solid #d5d5d5;
+  border-radius: 10px;
+  background: #f7f7f7;
+  padding: 7px;
+  display: grid;
+  gap: 4px;
+}
+
+.prop-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+}
+
+.k {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.v {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4d4d4d;
+  white-space: nowrap;
+}
+
+/* 字幕语言 + 时间戳格式合并到同一行 */
+.inline-row {
+  display: flex;
+  gap: 8px;
+}
+
+.inline-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.inline-field .label {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.inline-field select {
+  width: 100%;
+  height: 32px;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  padding: 0 8px;
+  background: #fff;
+  color: #2d2d2d;
+  font-size: 13px;
+}
+
+.inline-field select option {
+  font-size: 13px;
+}
+
+/* 自定义路径 */
+.path-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.path-check {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4d4d4d;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.path-check input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+#customPathInput {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  padding: 0 8px;
+  background: #fff;
+  color: #2d2d2d;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+#customPathInput:disabled {
+  background: #f0f0f0;
+  color: #555;
+}
+
+#subtitleSelect,
+#timestampModeSelect {
+  height: 32px;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  padding: 0 8px;
+  background: #fff;
+  color: #2d2d2d;
+  font-size: 13px;
+}
+
+#subtitleSelect option,
+#timestampModeSelect option {
+  font-size: 13px;
+}
+
+#preview {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  padding: 8px;
+  resize: none;
+  font-size: 12px;
+  line-height: 1.5;
+  background: #fff;
+  color: #2f2f2f;
+  overflow: auto;
+  white-space: pre;
+  font-family: "SF Mono", "JetBrains Mono", "PingFang SC", Menlo, Monaco, Consolas, monospace;
+}
+
+.send {
+  border: 1px solid #a88fff;
+  background: linear-gradient(180deg, #9c82ff 0%, #8f75ef 100%);
+  border-radius: 9px;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.message {
+  margin: 0;
+  font-size: 12px;
+  color: #0f766e;
+  white-space: normal;
+  line-height: 1.35;
+  overflow: visible;
+}
+
+.message:empty {
+  display: none;
+}
+
+/* 批量下载区域（合集 / 全部P） */
+.batch-section {
+  border: 1px solid #d4d0f0;
+  border-radius: 10px;
+  background: #f5f3ff;
+  padding: 8px;
+}
+
+.batch-section .section-title {
+  margin-bottom: 6px;
+}
+
+.batch-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.batch-btn {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #c4b5fd;
+  background: linear-gradient(180deg, #8b75ef 0%, #7d67e0 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 11px;
+  border-radius: 9px;
+  padding: 7px 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.15s;
+}
+
+.batch-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: linear-gradient(180deg, #c8c0e0 0%, #b8b0d0 100%);
+  border-color: #d0cce0;
+  color: #e8e4f0;
+}
+
+/* 下载完成状态：浅绿色 */
+.batch-btn.batch-btn-done:disabled {
+  opacity: 0.85;
+  background: linear-gradient(180deg, #b8e6b0 0%, #a0d89a 100%);
+  border-color: #80c87a;
+  color: #2d6b28;
+}
+
+/* 合集双按钮布局（保留通用 .season-btn 用于可能出现的二次按钮） */
+.season-btn {
+  border: 1px solid #c4b5fd;
+  background: linear-gradient(180deg, #8b75ef 0%, #7d67e0 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  border-radius: 9px;
+  padding: 7px 0;
+  cursor: pointer;
+}
+  flex-shrink: 0;
+  width: auto;
+  padding: 7px 12px;
+}

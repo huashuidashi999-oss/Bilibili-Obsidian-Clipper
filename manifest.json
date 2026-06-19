@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Bilibili Obsidian Clipper｜一键保存B站字幕",
+  "version": "1.0.19",
+  "description": "在 B 站视频页抓取字幕，预览后一键保存到 Obsidian。",
+  
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "bilibili-obsidian-clipper@github.com",
+      "strict_min_version": "109.0"
+    }
+  },
+  
+  "permissions": ["storage", "scripting"],
+  "host_permissions": [
+    "https://www.bilibili.com/*",
+    "https://api.bilibili.com/*",
+    "https://*.hdslb.com/*",
+    "http://127.0.0.1/*",
+    "https://127.0.0.1/*",
+    "http://localhost/*",
+    "https://localhost/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.bilibili.com/video/*",
+        "https://www.bilibili.com/list/watchlater",
+        "https://www.bilibili.com/list/watchlater/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Bilibili Obsidian Clipper",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    },
+    "default_popup": "popup.html"
+  }
+}

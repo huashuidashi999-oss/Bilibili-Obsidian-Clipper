@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bilibili Clipper</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <header class="top">
+        <strong>B站字幕</strong>
+        <div class="header-actions">
+          <button id="readingViewBtn" type="button" class="study-btn">一键开学</button>
+          <button id="settingsBtn" type="button" class="ghost">设置</button>
+        </div>
+      </header>
+
+      <p id="status" class="status">准备就绪</p>
+
+      <!-- 批量下载区域（合集 / 全部P / UP主全部） -->
+      <section id="batchSection" class="batch-section" style="display:none">
+        <div class="section-title">批量下载</div>
+        <div class="batch-actions">
+          <button id="batchSeasonBtn" type="button" class="batch-btn" disabled>合集下载</button>
+          <button id="batchMultiPageBtn" type="button" class="batch-btn" disabled>全部P下载</button>
+        </div>
+      </section>
+
+      <div class="section-title">属性</div>
+      <section class="props">
+        <div class="prop-row"><span class="k">title</span><span id="propTitle" class="v"></span></div>
+        <div class="prop-row"><span class="k">url</span><span id="propUrl" class="v"></span></div>
+        <div class="prop-row"><span class="k">created</span><span id="propCreated" class="v"></span></div>
+        <div class="prop-row"><span class="k">tags</span><span id="propTags" class="v"></span></div>
+      </section>
+
+      <!-- 自定义保存路径 -->
+      <div class="path-row">
+        <label class="path-check">
+          <input id="customPathCheck" type="checkbox" />
+          <span>自定义路径</span>
+        </label>
+        <input id="customPathInput" type="text" list="recentPathsDatalist" placeholder="输入自定义路径，留空则使用设置中的默认路径" disabled />
+        <datalist id="recentPathsDatalist"></datalist>
+      </div>
+
+      <!-- 字幕语言 + 时间戳格式（合并到同一行） -->
+      <div class="inline-row">
+        <div class="inline-field">
+          <label class="label" for="subtitleSelect">字幕语言</label>
+          <select id="subtitleSelect"></select>
+        </div>
+        <div class="inline-field">
+          <label class="label" for="timestampModeSelect">时间戳格式</label>
+          <select id="timestampModeSelect">
+            <option value="media-extended">时间戳链接</option>
+            <option value="plain">纯文本时间戳</option>
+            <option value="hidden">不显示时间戳</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="label" for="preview">字幕预览</label>
+      <textarea id="preview" readonly wrap="off"></textarea>
+
+      <button id="sendBtn" type="button" class="send">保存到 Obsidian</button>
+      <p id="message" class="message"></p>
+    </main>
+
+    <script src="./popup.js"></script>
+  </body>
+</html>
