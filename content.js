@@ -14,7 +14,7 @@ const DEFAULT_SETTINGS = {
   readerLineHeight: "tight",
   readerChapterVisibility: "show",
   readerTranscriptVisible: true,
-  readerLayoutSide: false,
+  readerLayoutSide: true,
   frontmatterFields: [
     "title",
     "url",
@@ -72,7 +72,7 @@ const state = {
   readingLineHeight: "tight",
   readingChapterVisible: true,
   readingTranscriptVisible: true,
-  readingLayoutSide: false,
+  readingLayoutSide: true,
   readingSettingsExpanded: false,
   readingDescriptionExpanded: false,
   readingActiveSubtitleIndex: -1,
@@ -125,7 +125,7 @@ const state = {
   readerFontSize: 14,
   readerLetterSpacing: 0,
   readerLineHeight: 1.5,
-  readerSubtitlePercent: 35,
+  readerSubtitlePercent: 28,
   readingResizerDown: false,
   // 划词高亮
   highlights: [],
@@ -223,7 +223,7 @@ function normalizeReaderTranscriptVisible(value) {
 }
 
 function normalizeReaderLayoutSide(value) {
-  return value === true;
+  return value !== false;
 }
 
 /* ── 阅读器布局计算 ── */
@@ -399,6 +399,7 @@ async function enterReaderMode() {
   state.readingNativePageMode = true;
   document.body.setAttribute("data-boc-reading-active", "1");
   hydrateReaderStateFromSettings(state.settings);
+  state.readingLayoutSide = true; // 章节始终在右侧
   applyReadingViewPresentation();
   alignReaderViewportToPlayer();
   await sleep(0);
@@ -1073,7 +1074,8 @@ function layoutReaderPlayerHost() {
 function syncInlineHostHeight(heightPx) {
   const inlineHost = document.getElementById("boc-reading-inline-host");
   if (inlineHost) {
-    inlineHost.style.height = `${heightPx}px`;
+    const clamped = Math.max(200, Math.round(heightPx) || 320);
+    inlineHost.style.height = `${clamped}px`;
   }
 }
 
@@ -1103,7 +1105,7 @@ function applyReaderLineHeight(val) {
 /* ── 窗口大小（总宽度） ── */
 
 function applyReaderWindowWidth(px) {
-  const val = Math.max(600, Math.min(2000, Number(px) || 1100));
+  const val = Math.max(1000, Math.min(1740, Number(px) || 1600));
   state.readerWindowWidth = val;
   // 直接在根元素上设置 CSS 变量，实时生效
   document.body.style.setProperty("--boc-reader-content-max", `${val}px`);
@@ -2439,22 +2441,39 @@ async function sendReadingToObsidian() {
     const filepath = baseFolder ? `${baseFolder}/${filename}` : filename;
     await writeNoteByLocalApi(baseUrl, apiKey, filepath, fullMarkdown);
     msg = `已保存${hlList.length > 0 ? `（${hlList.length} 处高亮）` : ""}`;
-    renderReadingStatus(msg);
+    showReaderSaveToast(msg, false);
   } catch (error) {
     msg = `保存失败：${getErrorMessage(error)}`;
-    renderReadingStatus(msg);
+    showReaderSaveToast(msg, true);
   }
-  // 临时显示状态栏（覆盖 display:none !important）
-  const statusEl = document.getElementById(ids.readingStatus);
-  if (statusEl) {
-    statusEl.style.setProperty("display", "block", "important");
-    clearTimeout(statusEl._bocSaveTimer);
-    statusEl._bocSaveTimer = setTimeout(() => {
-      if (document.body.hasAttribute("data-boc-reader-mode")) {
-        statusEl.style.setProperty("display", "none", "important");
-      }
-    }, 6000);
+}
+
+/** 在"存"按钮下方显示临时提示，与按钮自动隐藏时间一致（1 秒） */
+function showReaderSaveToast(text, isError = false) {
+  const btn = document.getElementById(ids.readingSaveBtn);
+  if (!btn) return;
+  const rect = btn.getBoundingClientRect();
+  // 移除同位置已有的 toast
+  const old = btn._bocSaveToast;
+  if (old && old.parentNode) old.parentNode.removeChild(old);
+  clearTimeout(btn._bocSaveToastTimer);
+
+  const toast = document.createElement("div");
+  toast.className = "boc-save-toast";
+  toast.textContent = text;
+  toast.style.position = "fixed";
+  toast.style.left = `${rect.left + rect.width / 2}px`;
+  toast.style.top = `${rect.bottom + 6}px`;
+  if (isError) {
+    toast.classList.add("error");
   }
+  document.body.appendChild(toast);
+  btn._bocSaveToast = toast;
+
+  btn._bocSaveToastTimer = setTimeout(() => {
+    if (toast.parentNode) toast.parentNode.removeChild(toast);
+    btn._bocSaveToast = null;
+  }, 2000);
 }
 
 function formatTime(seconds) {
@@ -3186,7 +3205,7 @@ function init() {
     applyReaderLetterSpacing(ls("readerLetterSpacing") ?? state.readerLetterSpacing);
     applyReaderLineHeight(ls("readerLineHeight") ?? state.readerLineHeight);
     applyReaderWindowWidth(ls("readerWindowWidth") ?? state.readerWindowWidth);
-    const savedPct = ls("readerSubtitlePercent") ?? state.readerSubtitlePercent ?? 35;
+    const savedPct = ls("readerSubtitlePercent") ?? state.readerSubtitlePercent ?? 28;
     state.readingPlayerRatio = 1 - savedPct / 100;
     renderTimestampModeSelect();
     applyReadingViewPresentation();
@@ -3442,14 +3461,14 @@ function buildUiHtml() {
                 <div class="boc-reading-slider-row">
                   <span class="boc-reading-stepper-title">窗口大小</span>
                   <div class="boc-reading-slider-wrap">
-                    <input id="${ids.readingContentWidthSelect}" type="range" min="800" max="2400" step="10" value="1600" class="boc-reading-slider" />
+                    <input id="${ids.readingContentWidthSelect}" type="range" min="1000" max="1740" step="10" value="1600" class="boc-reading-slider" />
                     <span id="boc-reading-width-label" class="boc-reading-slider-label">1600px</span>
                   </div>
                 </div>
                 <div class="boc-reading-slider-row">
                   <span class="boc-reading-stepper-title">字幕宽度</span>
                   <div class="boc-reading-slider-wrap">
-                    <input id="${ids.readingSplitRatioSlider}" type="range" min="24" max="50" step="1" value="35" class="boc-reading-slider" />
+                    <input id="${ids.readingSplitRatioSlider}" type="range" min="25" max="32" step="1" value="28" class="boc-reading-slider" />
                     <span id="boc-reading-split-ratio-label" class="boc-reading-slider-label">558px</span>
                   </div>
                 </div>
@@ -3674,7 +3693,7 @@ function bindUiEvents() {
     // 恢复保存的值
     let saved;
     try { saved = localStorage.getItem("boc_readerSubtitlePercent"); } catch {}
-    saved = saved !== null ? Number(saved) : (state.readerSubtitlePercent ?? 35);
+    saved = saved !== null ? Number(saved) : (state.readerSubtitlePercent ?? 28);
     splitEl.value = String(saved);
     if (splitLabel) splitLabel.textContent = `${calcSplitPx(saved)}px`;
     applyReaderSplit(1 - Number(saved) / 100);

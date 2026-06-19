@@ -151,6 +151,27 @@
   padding: 0 2px;
 }
 
+/* ── 保存提示 toast ── */
+.boc-save-toast {
+  position: fixed;
+  z-index: 2147483647;
+  background: #16a34a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateX(-50%);
+  transition: opacity 0.2s ease-out;
+}
+.boc-save-toast.error {
+  background: #dc2626;
+}
+}
+
 #boc-reading-view {
   position: fixed;
   left: 16px;
@@ -1110,11 +1131,16 @@ body[data-boc-reader-mode="1"] .boc-reading-stage {
   height: auto;
 }
 
+/* 阅读器模式下原始字幕轨隐藏（内容已移至 #boc-reading-inline-host） */
+body[data-boc-reader-mode="1"] .boc-reading-transcript-rail {
+  display: none !important;
+}
+
 html[data-boc-reader-mode="1"],
 body[data-boc-reader-mode="1"] {
   --boc-reader-page-padding: clamp(16px, 2.8vw, 32px);
   --boc-reader-layout-gap: clamp(16px, 2vw, 24px);
-  --boc-reader-rail-target-width: clamp(168px, 15vw, 220px);
+  --boc-reader-rail-target-width: clamp(252px, 22.5vw, 330px);
   --boc-reader-main-width: min(
     var(--boc-reader-content-max),
     calc(100vw - (var(--boc-reader-page-padding) * 2))
@@ -1139,6 +1165,22 @@ body[data-boc-reader-mode="1"] {
   width: min(420px, calc(50vw - var(--boc-reader-page-padding) * 2)) !important;
   max-height: calc(100vh - 80px) !important;
   z-index: 2147483647 !important;
+}
+
+/* 右侧布局：章节浮动在视频右侧 */
+body[data-boc-reader-mode="1"] #boc-reading-view[data-layout-side="1"] .boc-reading-rail {
+  --boc-rail-left: auto;
+  --boc-rail-right: var(--boc-reader-page-padding);
+}
+
+body[data-boc-reader-mode="1"] #boc-reading-view[data-layout-side="1"] .left-container {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+body[data-boc-reader-mode="1"] #boc-reading-view[data-layout-side="1"] .scroll-sticky {
+  margin-left: 0 !important;
+  margin-right: auto !important;
 }
 
 html[data-boc-reader-mode="1"][data-boc-reader-line-height="compact"],
@@ -1404,10 +1446,11 @@ body[data-boc-reader-mode="1"] .boc-reading-settings-panel .boc-reading-info-cop
 body[data-boc-reader-mode="1"] .boc-reading-rail {
   position: fixed;
   display: grid !important;
-  left: var(--boc-reader-page-padding) !important;
-  top: 112px !important;
+  left: var(--boc-rail-left, var(--boc-reader-page-padding)) !important;
+  right: var(--boc-rail-right, auto) !important;
+  top: 60px !important;
   width: var(--boc-reader-rail-width) !important;
-  min-width: 150px !important;
+  min-width: 200px !important;
   max-height: calc(100vh - 136px) !important;
   padding: 12px;
   box-sizing: border-box;
@@ -1463,6 +1506,7 @@ body[data-boc-reader-mode="1"] #viewbox_report {
 body[data-boc-reader-mode="1"] #boc-reading-inline-host {
   width: calc(35% - 3px);
   max-width: calc(35% - 3px);
+  min-height: 320px;
   padding: 0;
   border: 1px solid var(--boc-reader-border);
   border-bottom: 0;
